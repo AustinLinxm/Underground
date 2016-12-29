@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 8f;
 
     Vector3 movement;
-    //Animator anim;
+    Animator anim;
     CharacterController playerController;
     int floorMask;
     float camRayLength = 100f;
@@ -18,13 +18,16 @@ public class PlayerMovement : MonoBehaviour
     void Awake ()
     {
         floorMask = LayerMask.GetMask ("Floor");
-        //anim = GetComponent<Animator> ();
+        anim = GetComponent<Animator> ();
         playerController = GetComponent<CharacterController>();
     }
 
     void FixedUpdate()
     {
-        //float h = Input.GetAxisRaw ("Horizontal");
+
+        float h = Input.GetAxisRaw ("Horizontal");
+        Animating(h);
+
         if (playerController.isGrounded)
         {
             verticalVelocity = -gravity * Time.deltaTime;
@@ -39,11 +42,18 @@ public class PlayerMovement : MonoBehaviour
         }
 
         Vector3 moveVector = Vector3.zero;
-        moveVector.x = Input.GetAxisRaw("Horizontal") * speed;
+        moveVector.x = h * speed;
         moveVector.y = verticalVelocity;
         moveVector.z = 0f;
         playerController.Move(moveVector * Time.deltaTime);
 
+        
+    }
+
+    void Animating(float h)
+    {
+        bool walking = h != 0f && true;
+        anim.SetBool ("IsWalking", walking);
     }
 
 }
