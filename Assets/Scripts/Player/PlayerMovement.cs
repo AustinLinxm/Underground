@@ -6,19 +6,19 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 7f;
     public float jumpForce = 8f;
 
-    Vector3 movement;
+    //Vector3 movement;
     Animator anim;
     CharacterController playerController;
     Rigidbody playerRigidbody;
-    int floorMask;
-    float camRayLength = 100f;
+    //int floorMask;
+    //float camRayLength = 100f;
     float verticalVelocity;
     float gravity = 15f;
     
 
     void Awake ()
     {
-        floorMask = LayerMask.GetMask ("Floor");
+        //floorMask = LayerMask.GetMask ("Floor");
         anim = GetComponent<Animator> ();
         playerController = GetComponent<CharacterController>();
         playerRigidbody = GetComponent<Rigidbody>();
@@ -47,13 +47,15 @@ public class PlayerMovement : MonoBehaviour
         
         // position change make player looks like moving
         Vector3 moveVector = Vector3.zero;
+        Vector3 lightPosition = Vector3.zero;
+
         moveVector.x = h * speed;
         moveVector.y = verticalVelocity;
         moveVector.z = 0f;
         playerController.Move(moveVector * Time.deltaTime);
 
-
         Turning();
+
 
     }
 
@@ -65,16 +67,23 @@ public class PlayerMovement : MonoBehaviour
 
     void Turning()
     {
+        Vector3 lightRotation = Vector3.zero;
+                
+
+        lightRotation.x = -10f;
+        lightRotation.z = 0f;
         if (Input.GetKeyDown("d"))
         {
-            if(playerRigidbody.rotation != Quaternion.Euler(0, 90f, 0))
-                playerRigidbody.MoveRotation (Quaternion.Euler(0, 90f, 0));
+            lightRotation.y = -90f;
+            if (playerRigidbody.rotation != Quaternion.Euler(0, 90f, 0))
+                playerRigidbody.MoveRotation(Quaternion.Euler(0, 90f, 0));           
         }
 
         else if (Input.GetKeyDown("a"))
         {
+            lightRotation.y = 90f;
             if (playerRigidbody.rotation != Quaternion.Euler(0, -90f, 0))
-                 playerRigidbody.MoveRotation(Quaternion.Euler(0, -90f, 0));
+                playerRigidbody.MoveRotation(Quaternion.Euler(0, -90f, 0));
         }
     }
 }
