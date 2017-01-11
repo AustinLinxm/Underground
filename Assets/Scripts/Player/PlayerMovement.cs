@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -27,14 +28,16 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         // get the key input and change the animation
-        float h = Input.GetAxisRaw ("Horizontal");
+        //float h = Input.GetAxisRaw ("Horizontal");
+        float h = CrossPlatformInputManager.GetAxis ("Horizontal");
         Animating(h);
 
         // jumping
         if (playerController.isGrounded)
         {
             verticalVelocity = -gravity * Time.deltaTime;
-            if (Input.GetKeyDown(KeyCode.Space))
+            //if (Input.GetKeyDown(KeyCode.Space))
+            if (CrossPlatformInputManager.GetButtonDown("Jump"))
             {
                 verticalVelocity = jumpForce;
             }
@@ -44,19 +47,17 @@ public class PlayerMovement : MonoBehaviour
             verticalVelocity -= gravity * Time.deltaTime;
         }
 
-        
         // position change make player looks like moving
         Vector3 moveVector = Vector3.zero;
-        Vector3 lightPosition = Vector3.zero;
 
         moveVector.x = h * speed;
         moveVector.y = verticalVelocity;
         moveVector.z = 0f;
+
         playerController.Move(moveVector * Time.deltaTime);
 
-        Turning();
-
-
+        Turning(h);
+        
     }
 
     void Animating(float h)
@@ -65,21 +66,21 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool ("IsWalking", walking);
     }
 
-    void Turning()
+    void Turning(float h)
     {
         Vector3 lightRotation = Vector3.zero;
                 
 
         lightRotation.x = -10f;
         lightRotation.z = 0f;
-        if (Input.GetKeyDown("d"))
+        if (Input.GetKeyDown("d") || h > 0)
         {
             lightRotation.y = -90f;
             if (playerRigidbody.rotation != Quaternion.Euler(0, 90f, 0))
                 playerRigidbody.MoveRotation(Quaternion.Euler(0, 90f, 0));           
         }
 
-        else if (Input.GetKeyDown("a"))
+        else if (Input.GetKeyDown("a") || h < 0)
         {
             lightRotation.y = 90f;
             if (playerRigidbody.rotation != Quaternion.Euler(0, -90f, 0))
